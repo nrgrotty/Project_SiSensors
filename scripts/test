@@ -1,0 +1,7 @@
+import h5py 
+F = h5py.File('signaldata.h5','r')
+pedestals = F['header/pedestal']
+ped = pedestals[0]
+
+
+print(ped)
