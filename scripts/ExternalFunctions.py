@@ -371,7 +371,7 @@ def plot_fit_gaussian(data,Nbins,ax=None,fit_ullh=None,format_N=None,format_mu=N
     #Fiting with chi2
     mask = (y>0)
     chi2_object = Chi2Regression(gauss_extended,x[mask],y[mask],sy[mask])
-    minuit_chi2 = Minuit(chi2_object,N=len(data),binwidth=bin_width,mu=np.mean(data),sigma=np.std(data),fix_binwidth=True,pedantic=False,print_level=0)
+    minuit_chi2 = Minuit(chi2_object,N=len(data),binwidth=bin_width,mu=np.mean(data),sigma=np.std(data)) #,fix_binwidth=True,pedantic=False,print_level=0)
     minuit_chi2.migrad();
     
     chi2_value = minuit_chi2.fval
@@ -381,7 +381,7 @@ def plot_fit_gaussian(data,Nbins,ax=None,fit_ullh=None,format_N=None,format_mu=N
     ax.errorbar(x[mask],y[mask],yerr=sy[mask],fmt='.',label='Binned data',color='gray',alpha=0.5)
     
     x_fit=np.linspace(xmin,xmax,100)
-    y_fit_chi2 = gauss_extended(x_fit,*minuit_chi2.args)
+    y_fit_chi2 = gauss_extended(x_fit,minuit_chi2.values['N'],minuit_chi2.values['binwidth'],minuit_chi2.values['mu'],minuit_chi2.values['sigma']) #*minuit_chi2.args)
     ax.plot(x_fit,y_fit_chi2,label=r'$\chi^2$ gaussian fit',color='blue')
     
     d = {'N': format_N.format(minuit_chi2.values['N'], minuit_chi2.errors['N']),
@@ -396,10 +396,10 @@ def plot_fit_gaussian(data,Nbins,ax=None,fit_ullh=None,format_N=None,format_mu=N
     #Fitting with ullh
     if (fit_ullh is not False):
         ullh_object = UnbinnedLH(gauss_extended,data,weights=None)
-        minuit_ullh = Minuit(ullh_object,N=len(data),binwidth=1.,mu=np.mean(data),sigma=np.std(data),fix_binwidth=True,fix_N=True,pedantic=False,print_level=0)
+        minuit_ullh = Minuit(ullh_object,N=len(data),binwidth=1.,mu=np.mean(data),sigma=np.std(data)) #,fix_binwidth=True,fix_N=True,pedantic=False,print_level=0)
         minuit_ullh.migrad()
 
-        y_fit_ullh = gauss_extended(x_fit,*minuit_ullh.args)*bin_width
+        y_fit_ullh = gauss_extended(x_fit,minuit_ullh.values['N'],minuit_ullh.values['binwidth'],minuit_ullh.values['mu'],minuit_ullh.values['sigma'])*bin_width
         ax.plot(x_fit,y_fit_ullh,label=r'ULLH gaussian fit',color='green')
         d = {'N': format_N.format(minuit_ullh.values['N'], minuit_ullh.errors['N']),
              r'$\mu$': format_mu.format(minuit_ullh.values['mu'],minuit_ullh.errors['mu']),
