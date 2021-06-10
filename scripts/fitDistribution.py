@@ -20,8 +20,8 @@ adc_errors = []
 
 #CODE THAT NEEDS TO BE ADAPTED
 file_name = 'signaldata'
-charge = pd.read_csv(results_path+file_name)['Charge']
-fitting_results = fit_chargeDistribution(charge,75,145,fig_path=fig_path+file_name,Nbins_charge=130)
+charge = pd.read_csv(results_path+'charge_'+file_name)['Charge']
+fitting_results = fit_chargeDistribution(charge,80,145,fig_path=fig_path+file_name,Nbins_charge=160)
 
 
 adc_means.append(fitting_results['m'])

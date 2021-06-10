@@ -13,14 +13,14 @@ fig_path = '../figures/'
 files_path = '../data/'
 results_path = '../results/'
 
-signal_dataFiles_names = ['signaldata.h5']
+signal_dataFiles_names = ['signaldata']
 SNR_cuts = [5]
 
 for i in range(len(signal_dataFiles_names)):   
     clusters = get_clusters(files_path+signal_dataFiles_names[i],SNR_cuts[i])
     
     charge = pd.DataFrame(clusters['cluster_charge'],columns=['Charge'])
-    charge.to_csv(results_path+'charge_'+signal_dataFiles_names,index=False)
+    charge.to_csv(results_path+'charge_'+signal_dataFiles_names[i],index=False)
     
     #Make the plots to check that the SNR_cut is fine
     plot_clusters(clusters['cluster_size'],clusters['n_clusters'],

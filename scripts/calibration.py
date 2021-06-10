@@ -34,8 +34,38 @@ estimate_curve = calibration_func(adcs,coefs)
 #     estimate_curve.append(calibration_func(x,coefs))
 
 fig,ax=plt.subplots()
-ax.plot(adcs,n_elect,'o',label='Calibration data')
-ax.plot(adcs,estimate_curve,label='Calibration fit')
-ax.set(xlabel='ADC charge',ylabel='Number of electrons')
+ax.plot(adcs,n_elect,'o',label='Data')
+ax.plot(adcs,estimate_curve,label='Fit')
+ax.set(xlabel='Charge [ADC]',ylabel='Charge [Num.electrons]')
 ax.legend()
-fig.show()
+fig.savefig(fig_path+'calibration_110.png')
+
+
+# In[Nice plot after calibration]
+
+from ExternalFunctions import *
+from alibaba_functions import get_clusters,get_calibration_function,fit_chargeDistribution,plot_clusters
+import pandas as pd
+
+fig_path = '../figures/'
+files_path = '../data/'
+results_path = '../results/'
+
+voltages = [110]
+adc_means = []
+adc_errors = []
+
+
+#CODE THAT NEEDS TO BE ADAPTED
+file_name = 'signaldata'
+chargeADC = pd.read_csv(results_path+'charge_'+file_name)['Charge']
+fitting_results = fit_chargeDistribution(chargeADC,80,145,fig_path=fig_path+'_chargeADC_'+file_name,Nbins_charge=130,max_charge=300)
+
+
+calibration_func = get_calibration_function(files_path+'Calibration_charge_allRange_hist',degree=4)
+charge = calibration_func(chargeADC)/3.62
+
+fitting_results = fit_chargeDistribution(charge,5500,10000,fig_path=fig_path+'_charge_'+file_name,Nbins_charge=120,max_charge=30000,units='eV')
+
+adc_means.append(fitting_results['m'])
+adc_errors.append(fitting_results['error_m'])

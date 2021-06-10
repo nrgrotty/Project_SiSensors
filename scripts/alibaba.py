@@ -36,7 +36,7 @@ files_path = '../data/'
 
 # In[EXERCISE 4]
 
-filename = files_path+'signaldata.h5'
+filename = files_path+'signaldata'
 F = h5py.File(filename, "r") 
 
 filename2 = files_path+'Data100'
@@ -126,7 +126,7 @@ sig_min,sig_max = np.min(signal),np.max(signal)
 
 fig,ax = plt.subplots()
 create_1d_hist(ax,signal,bins=100,x_range=(sig_min,sig_max),title='Raw signal')
-ax.set(yscale='log')
+ax.set(yscale='log',xlabel='Charge [ADC]',ylabel='Counts')
 
 fig.tight_layout()
 fig.savefig(fig_path+'./signa_hist.png')

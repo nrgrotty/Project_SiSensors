@@ -74,7 +74,7 @@ def get_calibration_function(file_path,degree=4):
     
     coefs,cov = np.polyfit(adcs,n_elect,degree,cov=True,full=False)
 
-    def calibration_func(x,coefs):
+    def calibration_func(x):
     
         poly_deg = coefs.size-1    
         x_powers = np.array([x**(poly_deg-n) for n in range(poly_deg+1)]).T  
@@ -101,16 +101,16 @@ def plot_clusters(cluster_size,n_clusters,fig_path=None,SNR_cut=-1.):
     
     return fig,ax
 
-def fit_chargeDistribution(clusters_charge,lower_th,upper_th,fig_path=None,Nbins_charge=130):
+def fit_chargeDistribution(clusters_charge,lower_th,upper_th,max_charge=400,fig_path=None,Nbins_charge=130,units='ADC'):
     
     #Define range to plot
-    max_charge,min_charge = np.max(clusters_charge),np.min(clusters_charge)
+    #max_charge,min_charge = np.max(clusters_charge),np.min(clusters_charge)
+    min_charge = np.min(clusters_charge)
     
     #Ploting histogram
     fig_charge, ax_charge = plt.subplots()
-    y, edges = create_1d_hist(ax_charge,clusters_charge,bins=Nbins_charge,x_range=(min_charge,400),title='Clusters charge')
-    ax_charge.set(yscale='linear')
-    ax_charge.set(xlabel='ADC charge',ylabel='Counts')
+    y, edges = create_1d_hist(ax_charge,clusters_charge,bins=Nbins_charge,x_range=(min_charge,max_charge),title='Clusters charge',alpha=0.6)
+    ax_charge.set(xlabel=f'Charge [{units}]',ylabel='Counts')#,ylim=(0,3000))
     
     #Getting binned data
     x = (edges[:-1] + edges[1:])/2
@@ -144,7 +144,7 @@ def fit_chargeDistribution(clusters_charge,lower_th,upper_th,fig_path=None,Nbins
          r'$\chi^2$/Ndof': "{:.2f}/{:d}".format(chi2_value,Ndof),
          r'P($\chi^2$)': format_p.format(Pchi2*100)}    
     
-    add_text_to_ax(0.42,0.95,nice_string_output(d_chi2,0),ax_charge,fontsize=12,color='blue')
+    add_text_to_ax(0.4,0.95,nice_string_output(d_chi2,0),ax_charge,fontsize=12,color='blue')
         
     ax_charge.plot(x[mask],y_fit_chi2,'-o',label='chi2 fit',color='blue')
     

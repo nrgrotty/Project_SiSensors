@@ -124,3 +124,77 @@ plot_fit_gaussian(signal,N_bins,ax=ax[1],fit_ullh=False)#,format_p='{:1.2e}')
 fig.tight_layout()
 fig.savefig(fig_path+'signal_alibava_2.png')
 
+# In[]
+
+F = h5py.File(files_path+'Data100', "r") 
+raw_data = np.array(F.get('events/signal'))
+
+signal = get_signal(raw_data,raw_data)[:,45]
+
+N_bins = 107
+fig,ax = plt.subplots(2,1,figsize=(8,5))
+
+ax[0].plot(signal,label='All channels')
+ax[0].set(xlabel='Event', ylabel='Signal [ADC] (Channel 44)')
+
+ax[1].hist(signal,bins=N_bins,alpha=0.6)
+ax[1].set(xlabel='Signal [ADC] (Channel 44)',ylabel='Counts')
+
+plot_fit_gaussian(signal,N_bins,ax=ax[1],fit_ullh=False)#,format_p='{:1.2e}')
+
+fig.tight_layout()
+fig.savefig(fig_path+'signal_alibava_2.png')
+
+F = h5py.File(files_path+'Data2', "r") 
+raw_data = np.array(F.get('events/signal'))
+
+N_bins = 107
+fig,ax = plt.subplots(figsize=(8,5))
+ax.hist(get_commonNoise(raw_data),bins=N_bins,alpha=0.6)
+plot_fit_gaussian(get_commonNoise(raw_data),N_bins,ax=ax,fit_ullh=False)#,format_p='{:1.2e}')
+ax.set(xlabel='Common Noise [ADC]',ylabel='Counts')
+fig.tight_layout()
+fig.savefig(fig_path+'commonNoise_alibava_100.png')
+
+
+# In[]
+F = h5py.File(files_path+'signaldata', "r") 
+
+pedestals_estimate = F['header/pedestal'][0]
+noise_estimate = F['header/noise'][0]
+raw_data = F['events/signal']
+
+common_mode = np.sum((raw_data-pedestals_estimate),axis=1)/128 
+signal = np.array(raw_data) - np.array(pedestals_estimate) - np.array([common_mode]).T
+
+signal = signal[(signal<20)&(signal>-20)]
+
+N_bins = 150
+fig,ax = plt.subplots(figsize=(8,5))
+
+ax.hist(signal,bins=N_bins,alpha=0.6)
+ax.set(xlabel='Signal [ADC] (All channels)',ylabel='Counts')
+
+plot_fit_gaussian(signal,N_bins,ax=ax,fit_ullh=False,format_p='{:1.2e}')
+
+fig.tight_layout()
+fig.savefig(fig_path+'signalSOURCE_alibava_110.png')
+
+
+# In[]
+
+F = h5py.File(files_path+'Data2', "r") 
+raw_data = np.array(F.get('events/signal'))
+
+#ped = get_pedestals(raw_data)
+ped_est = np.array(F.get('header/pedestal')[0])
+
+fig,ax = plt.subplots()
+
+#ax.plot(ped,'-',label='Own calculation')
+ax.plot(ped_est,'-',label='Alibava estimate')
+#ax.legend()
+ax.set(xlabel='Channel', ylabel='Pedestals [ADC]')
+
+fig.tight_layout()
+fig.savefig(fig_path+'pedestals_alibava_2.png')

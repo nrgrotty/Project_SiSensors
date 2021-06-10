@@ -309,8 +309,8 @@ class Chi2Regression:  # override the class with a better one
         
         return chi2
 
-def create_1d_hist(ax, values, bins, x_range, title,label=None):
-    ax.hist(values, bins, x_range, density=False, lw=2,label=label)  # histtype='step'       
+def create_1d_hist(ax, values, bins, x_range, title,label=None,alpha=1):
+    ax.hist(values, bins, x_range, density=False, lw=2,label=label,alpha=alpha)  # histtype='step'       
     ax.set(xlim=x_range, title=title)
     hist_data = np.histogram(values, bins, x_range)
     return hist_data
