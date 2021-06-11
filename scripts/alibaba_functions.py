@@ -146,7 +146,7 @@ def fit_chargeDistribution(clusters_charge,lower_th,upper_th,max_charge=400,fig_
     
     add_text_to_ax(0.4,0.95,nice_string_output(d_chi2,0),ax_charge,fontsize=12,color='blue')
         
-    ax_charge.plot(x[mask],y_fit_chi2,'-o',label='chi2 fit',color='blue')
+    ax_charge.plot(x[mask],y_fit_chi2,'-',label='chi2 fit',color='blue')
     
     fig_charge.tight_layout()
     if (fig_path is not None): fig_charge.savefig(fig_path)

@@ -14,7 +14,7 @@ files_path = '../data/'
 results_path = '../results/'
 
 signal_dataFiles_names = ['signaldata']
-SNR_cuts = [5]
+SNR_cuts = [4]
 
 for i in range(len(signal_dataFiles_names)):   
     clusters = get_clusters(files_path+signal_dataFiles_names[i],SNR_cuts[i])
@@ -24,5 +24,11 @@ for i in range(len(signal_dataFiles_names)):
     
     #Make the plots to check that the SNR_cut is fine
     plot_clusters(clusters['cluster_size'],clusters['n_clusters'],
-                  fig_path=fig_path+signal_dataFiles_names[i],SNR_cut=SNR_cuts[i])
+                  fig_path=fig_path+signal_dataFiles_names[i]+str(SNR_cuts[i]),SNR_cut=SNR_cuts[i])
     
+    # #Make spectrum 
+    # fig,ax = plt.subplots()
+    # ax.hist(clusters['cluster_charge'],bins=100)
+    # ax.set(yscale='log')
+    # fig.suptitle(f'SNR_cut = {SNR_cuts[i]:1.2f}',fontsize=20)
+    # fig.savefig(fig_path+'spectrum_'+signal_dataFiles_names[i]+str(SNR_cuts[i]))

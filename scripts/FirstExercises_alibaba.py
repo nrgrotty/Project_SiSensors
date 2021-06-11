@@ -145,16 +145,30 @@ plot_fit_gaussian(signal,N_bins,ax=ax[1],fit_ullh=False)#,format_p='{:1.2e}')
 fig.tight_layout()
 fig.savefig(fig_path+'signal_alibava_2.png')
 
+# In[]
+F = h5py.File(files_path+'Data100', "r") 
+raw_data = np.array(F.get('events/signal'))
+noise_100 = get_commonNoise(raw_data)
+
 F = h5py.File(files_path+'Data2', "r") 
 raw_data = np.array(F.get('events/signal'))
+noise_2 = get_commonNoise(raw_data)
 
-N_bins = 107
-fig,ax = plt.subplots(figsize=(8,5))
-ax.hist(get_commonNoise(raw_data),bins=N_bins,alpha=0.6)
-plot_fit_gaussian(get_commonNoise(raw_data),N_bins,ax=ax,fit_ullh=False)#,format_p='{:1.2e}')
-ax.set(xlabel='Common Noise [ADC]',ylabel='Counts')
+
+fig,ax = plt.subplots(figsize=(7,3))
+ax.plot(range(1,129),noise_100,'-o',label='100 V')
+mean,std = np.mean(noise_100),np.std(noise_100)
+ax.fill_between(range(130), mean-std, mean+std,alpha=0.3)
+
+ax.plot(range(1,129),noise_2,'-o',label='2 V')
+mean,std = np.mean(noise_2),np.std(noise_2)
+ax.fill_between(range(130), mean-std, mean+std,alpha=0.3)
+
+ax.set(xlabel='Channels',ylabel='Common noise',ylim=(1.5,6),xlim=(0,129))
+ax.legend()
+
 fig.tight_layout()
-fig.savefig(fig_path+'commonNoise_alibava_100.png')
+fig.savefig(fig_path+'commonNoise_alibava.png')
 
 
 # In[]

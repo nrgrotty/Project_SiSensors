@@ -59,13 +59,13 @@ adc_errors = []
 #CODE THAT NEEDS TO BE ADAPTED
 file_name = 'signaldata'
 chargeADC = pd.read_csv(results_path+'charge_'+file_name)['Charge']
-fitting_results = fit_chargeDistribution(chargeADC,80,145,fig_path=fig_path+'_chargeADC_'+file_name,Nbins_charge=130,max_charge=300)
+fitting_results = fit_chargeDistribution(chargeADC,80,145,fig_path=fig_path+'_chargeADC_'+file_name,Nbins_charge=140,max_charge=300)
 
 
 calibration_func = get_calibration_function(files_path+'Calibration_charge_allRange_hist',degree=4)
 charge = calibration_func(chargeADC)/3.62
 
-fitting_results = fit_chargeDistribution(charge,5500,10000,fig_path=fig_path+'_charge_'+file_name,Nbins_charge=120,max_charge=30000,units='eV')
+fitting_results = fit_chargeDistribution(charge,5500,10000,fig_path=fig_path+'_charge_'+file_name,Nbins_charge=110,max_charge=30000,units='eV')
 
 adc_means.append(fitting_results['m'])
 adc_errors.append(fitting_results['error_m'])
