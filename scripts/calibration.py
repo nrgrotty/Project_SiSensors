@@ -10,6 +10,7 @@ from ExternalFunctions import *
 import pandas as pd 
 import matplotlib.pyplot as plt
 
+
 files_path = '../data/'
 fig_path = '../figures/'
 
@@ -35,8 +36,10 @@ estimate_curve = calibration_func(adcs,coefs)
 
 fig,ax=plt.subplots()
 ax.plot(adcs,n_elect,'o',label='Data')
-ax.plot(adcs,estimate_curve,label='Fit')
+ax.plot(adcs,estimate_curve,label='Fit',color='black')
 ax.set(xlabel='Charge [ADC]',ylabel='Charge [Num.electrons]')
+fited_curve = f'y = {coefs[0]:2.3e}'+r'$x^4$' + f'+{coefs[1]:2.3f}'+r'$x^3$' + f'+{coefs[2]:2.3f}'+r'$x^2$' + f'+{coefs[2]:2.3f}'+r'$x$' + f'+{coefs[3]:2.3f}'
+ax.text(0.15, 0.02, fited_curve, transform=ax.transAxes,color='black')
 ax.legend()
 fig.savefig(fig_path+'calibration_110.png')
 
@@ -59,13 +62,15 @@ adc_errors = []
 #CODE THAT NEEDS TO BE ADAPTED
 file_name = 'signaldata'
 chargeADC = pd.read_csv(results_path+'charge_'+file_name)['Charge']
-fitting_results = fit_chargeDistribution(chargeADC,80,145,fig_path=fig_path+'_chargeADC_'+file_name,Nbins_charge=140,max_charge=300)
+fitting_results = fit_chargeDistribution(chargeADC,80,145,fig_path=fig_path+'_chargeADC_'+file_name,Nbins_charge=150,max_charge=300)
 
 
 calibration_func = get_calibration_function(files_path+'Calibration_charge_allRange_hist',degree=4)
-charge = calibration_func(chargeADC)/3.62
+charge = calibration_func(chargeADC)*3.62/1000 #keV
 
-fitting_results = fit_chargeDistribution(charge,5500,10000,fig_path=fig_path+'_charge_'+file_name,Nbins_charge=110,max_charge=30000,units='eV')
+fitting_results = fit_chargeDistribution(charge,73,135,fig_path=fig_path+'_charge_'+file_name,Nbins_charge=110,max_charge=300,units='keV')
 
 adc_means.append(fitting_results['m'])
 adc_errors.append(fitting_results['error_m'])
+
+print(np.mean(charge))

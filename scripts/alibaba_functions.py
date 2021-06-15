@@ -81,7 +81,7 @@ def get_calibration_function(file_path,degree=4):
         
         return np.dot(x_powers,coefs)
     
-    return calibration_func
+    return calibration_func,coefs
 
 def plot_clusters(cluster_size,n_clusters,fig_path=None,SNR_cut=-1.):
     fig,ax = plt.subplots(1,2,figsize=(10,4))
@@ -101,7 +101,7 @@ def plot_clusters(cluster_size,n_clusters,fig_path=None,SNR_cut=-1.):
     
     return fig,ax
 
-def fit_chargeDistribution(clusters_charge,lower_th,upper_th,max_charge=400,fig_path=None,Nbins_charge=130,units='ADC'):
+def fit_chargeDistribution(clusters_charge,lower_th,upper_th,max_charge=400,fig_path=None,Nbins_charge=130,units='ADC',title=None):
     
     #Define range to plot
     #max_charge,min_charge = np.max(clusters_charge),np.min(clusters_charge)
@@ -139,15 +139,17 @@ def fit_chargeDistribution(clusters_charge,lower_th,upper_th,max_charge=400,fig_
         
     d_chi2 = {'N': format_N.format(minuit_chi2.values['N'], minuit_chi2.errors['N']),
         'binwidth': format_binwidth.format(minuit_chi2.values['binwidth'],minuit_chi2.errors['binwidth']),
-         r'$\mu$': format_mu.format(minuit_chi2.values['m'],minuit_chi2.errors['m']),
-         r'$\sigma$': format_sigma.format(minuit_chi2.values['s'],minuit_chi2.errors['s']),
+         r'm': format_mu.format(minuit_chi2.values['m'],minuit_chi2.errors['m']),
+         r's': format_sigma.format(minuit_chi2.values['s'],minuit_chi2.errors['s']),
          r'$\chi^2$/Ndof': "{:.2f}/{:d}".format(chi2_value,Ndof),
-         r'P($\chi^2$)': format_p.format(Pchi2*100)}    
+         r'P($\chi^2$)': format_p.format(Pchi2*100),
+         r'$\mu$': '{:1.2f}+/-{:1.2f}'.format(np.mean(clusters_charge),stats.sem(clusters_charge))}    
     
     add_text_to_ax(0.4,0.95,nice_string_output(d_chi2,0),ax_charge,fontsize=12,color='blue')
         
     ax_charge.plot(x[mask],y_fit_chi2,'-',label='chi2 fit',color='blue')
     
+    if (title is not None): fig_charge.suptitle(title)
     fig_charge.tight_layout()
     if (fig_path is not None): fig_charge.savefig(fig_path)
         

@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jun 15 18:40:30 2021
+
+@author: neus
+"""
+
+from alibaba_functions import get_calibration_function
+import matplotlib.pyplot as plt
+import pandas as pd
+
+fig_path = '../figures/'
+files_path = '../CCE_DATA/'
+results_path = '../results/'
+
+
+files_name = ['calib_010V','calib_020V','calib_030V','calib_040V','calib_050V','calib_060V',
+                          'calib_070V','calib_080V','calib_090V','calib_100V','calib_110V']
+
+for file in files_name:
+    
+    calib_func,coefs = get_calibration_function(files_path+file+'.txt')
+
+    data = pd.read_csv(files_path+file+'.txt',skiprows=1,delimiter='\t')
+    n_elect = data['X']
+    adcs = data['Function_0']
+    
+    fig,ax = plt.subplots()
+    ax.plot(adcs,n_elect,'o',label='Data')
+    ax.plot(adcs,calib_func(adcs),label='fit',color='black')
+    ax.set(xlabel='Charge [ADC]',ylabel='Charge[Num.electrons]')
+    
+    fited_curve = f'y = {coefs[0]:2.3e}'+r'$x^4$' + f'+{coefs[1]:2.3f}'+r'$x^3$' + f'+{coefs[2]:2.3f}'+r'$x^2$' + f'+{coefs[2]:2.3f}'+r'$x$' + f'+{coefs[3]:2.3f}'
+    ax.text(0.15, 0.02, fited_curve, transform=ax.transAxes,color='black')
+    
+    fig.suptitle(file)
+    fig.tight_layout()
+    fig.savefig(fig_path+file+'.png')
+    
+    chargeADC = pd.read_csv(results_path+'charge_data_'+file[6:])['Charge[ADC]'].to_numpy()
+    charge_kev = calib_func(chargeADC)*3.62/1000
+    
+    chargeDF = pd.DataFrame({'Charge[ADC]':chargeADC,
+                           'Charge[keV]':charge_kev})
+    
+    chargeDF.to_csv(results_path+'charge_'+file[6:],index=False)

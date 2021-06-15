@@ -125,7 +125,7 @@ signal = signal.flatten()
 sig_min,sig_max = np.min(signal),np.max(signal)
 
 fig,ax = plt.subplots()
-create_1d_hist(ax,signal,bins=100,x_range=(sig_min,sig_max),title='Raw signal')
+create_1d_hist(ax,signal,bins=100,x_range=(sig_min,sig_max),title='Corrected signal')
 ax.set(yscale='log',xlabel='Charge [ADC]',ylabel='Counts')
 
 fig.tight_layout()

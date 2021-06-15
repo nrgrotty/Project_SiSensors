@@ -91,7 +91,7 @@ common_mode = get_commonMode(raw_data)
 N_bins = 107
 fig,ax = plt.subplots(2,1,figsize=(8,5))
 
-ax[0].plot(common_mode,label='All channels')
+ax[0].plot(common_mode[:200],label='All channels')
 ax[0].set(xlabel='Event', ylabel='Common mode [ADC]')
 
 ax[1].hist(common_mode,bins=N_bins,alpha=0.6)
@@ -164,7 +164,7 @@ ax.plot(range(1,129),noise_2,'-o',label='2 V')
 mean,std = np.mean(noise_2),np.std(noise_2)
 ax.fill_between(range(130), mean-std, mean+std,alpha=0.3)
 
-ax.set(xlabel='Channels',ylabel='Common noise',ylim=(1.5,6),xlim=(0,129))
+ax.set(xlabel='Channels',ylabel='Electronic noise',ylim=(1.5,6),xlim=(0,129))
 ax.legend()
 
 fig.tight_layout()
